@@ -1,0 +1,6 @@
+biapi:
+  dbConfig:
+    # Uses MySQL.
+    database: HUBMED
+    user: teambio
+    host: localhost
