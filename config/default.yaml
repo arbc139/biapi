@@ -1,6 +1,11 @@
 biapi:
-  dbConfig:
-    # Uses MySQL.
-    database: HUBMED
-    user: teambio
-    host: localhost
+  eutilConfig:
+    tool: biapi
+    email: kem2182@yonsei.ac.kr
+    baseURL: https://eutils.ncbi.nlm.nih.gov/entrez/eutils/
+    database: pubmed
+    defaultField: 'Title/Abstract'
+    # TODO(totoro): On May 2018, apiKey configuration must be needed when using
+    # e-util api
+    # https://www.ncbi.nlm.nih.gov/books/NBK25499/#_chapter4_General_Usage_Guidelines_
+    apiKey: NONE

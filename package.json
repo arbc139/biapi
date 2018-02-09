@@ -6,17 +6,21 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "axios": "^0.17.1",
     "body-parser": "~1.17.1",
     "config": "^1.29.2",
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.4",
     "debug": "~2.6.3",
     "express": "~4.15.2",
+    "hashids": "^1.1.4",
     "jade": "~1.11.0",
     "js-yaml": "^3.10.0",
+    "lodash": "^4.17.5",
     "morgan": "~1.8.1",
     "mysql2": "^1.5.1",
     "serve-favicon": "~2.4.2",
+    "urlencode": "^1.1.0",
     "winston": "^2.4.0",
     "yargs": "^11.0.0"
   }
