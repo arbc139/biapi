@@ -65,7 +65,9 @@ router.get('/search/:id/pubmed', (req, res) => {
       res.status(200).send({
         status: STATUS_OK,
         id,
-        result,
+        start,
+        max,
+        articles: result,
       });
     })
     .catch((errorMessage) => {
@@ -76,22 +78,26 @@ router.get('/search/:id/pubmed', (req, res) => {
     });
 });
 
-/*
 router.get('/search/:id/pubmed/:pubmedId', (req, res) => {
   const id = _.get(req.params, 'id');
   const webEnv = base64.decode(id);
   const pubmedId = _.get(req.params, 'pubmedId');
 
   eutilsAPI.fetch(webEnv, pubmedId)
-    .then((result) => {
+    .then((article) => {
       res.status(200).send({
         status: STATUS_OK,
         id,
         pubmedId,
-        result,
+        article,
       });
     })
+    .catch((errorMessage) => {
+      res.status(404).send({
+        status: STATUS_ERR,
+        message: errorMessage,
+      });
+    });
 });
-*/
 
 module.exports = router;

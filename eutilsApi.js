@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const axios = require('axios');
+const changeCaseObject = require('change-case-object');
 const config = require('config');
 const xml2json = require('xml2json');
 
@@ -85,22 +86,29 @@ class EUtilsAPI {
         return xml2json.toJson(data, { object: true });
       })
       .then((jsonData) => {
-        const medlineCitation = _.get(
+        const medlineCitation = changeCaseObject.camelCase(_.get(
           jsonData,
           'PubmedArticleSet.PubmedArticle.MedlineCitation',
-        );
-        const title = _.get(medlineCitation, 'Article.ArticleTitle');
-        const abstract = _.get(
-          medlineCitation,
-          'Article.Abstract.AbstractText',
-          'No Abstracts',
-        );
-        const authors = _.get(
-          medlineCitation,
-          'Article.AuthorList.Author',
-        );
-        console.log(medlineCitation);
-        return medlineCitation;
+        ));
+
+        if (_.isUndefined(medlineCitation)) {
+          return Promise.reject('Article is not exist');
+        }
+
+        return {
+          title: _.get(medlineCitation, 'article.articleTitle'),
+          abstract: _.get(
+            medlineCitation,
+            'article.abstract.abstractText',
+            'No Abstracts',
+          ),
+          authors: _.get(
+            medlineCitation,
+            'article.authorList.author',
+            [],
+          ),
+          articleDate: _.get(medlineCitation, 'article.articleDate'),
+        };
       });
   }
 }
