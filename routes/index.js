@@ -26,48 +26,72 @@ const STATUS_ERR = 'biapi/router/STATUS_ERR';
 router.post('/search', (req, res) => {
   const query1 = _.get(req.body, 'query1');
   const query2 = _.get(req.body, 'query2');
+
+  if (_.isUndefined(query1) && _.isUndefined(query2)) {
+    res.status(404).send({
+      status: STATUS_ERR,
+      message: 'Queries is not undefined.',
+    });
+    return;
+  }
+
   const term = `${query1} AND ${query2}`;
 
-  eutilsAPI.searchTerm(term, 0, 20)
-    .then(({ data }) => {
-      if (_.has(data.esearchresult, 'ERROR')) {
-        res.status(404).send({
-          status: STATUS_ERR,
-          message: data.esearchresult.ERROR,
-        });
-        return;
-      }
-
-      const id = base64.encode(_.get(data, 'esearchresult.webenv'));
+  eutilsAPI.search(term, 0, 20)
+    .then((result) => {
+      const id = base64.encode(_.get(result, 'webenv'));
       res.status(200).send({
         status: STATUS_OK,
         id,
-        result: _.get(data, 'esearchresult'),
+        result,
+      });
+    })
+    .catch((errorMessage) => {
+      res.status(404).send({
+        status: STATUS_ERR,
+        message: errorMessage,
       });
     });
 });
 
-router.get('/search', (req, res) => {
-  const id = _.get(req.query, 'id');
+router.get('/search/:id/pubmed', (req, res) => {
+  const id = _.get(req.params, 'id');
   const webEnv = base64.decode(id);
-  console.log(webEnv);
+  const start = _.get(req.query, 'start', 0);
+  const max = _.get(req.query, 'max', 20);
 
-  eutilsAPI.searchWebEnv(webEnv, 0, 20)
-    .then(({ data }) => {
-      if (_.has(data.esearchresult, 'ERROR')) {
-        res.status(404).send({
-          status: STATUS_ERR,
-          message: data.esearchresult.ERROR,
-        });
-        return;
-      }
-
+  eutilsAPI.summary(webEnv, start, max)
+    .then((result) => {
       res.status(200).send({
         status: STATUS_OK,
         id,
-        result: _.get(data, 'esearchresult'),
+        result,
+      });
+    })
+    .catch((errorMessage) => {
+      res.status(404).send({
+        status: STATUS_ERR,
+        message: errorMessage,
       });
     });
 });
+
+/*
+router.get('/search/:id/pubmed/:pubmedId', (req, res) => {
+  const id = _.get(req.params, 'id');
+  const webEnv = base64.decode(id);
+  const pubmedId = _.get(req.params, 'pubmedId');
+
+  eutilsAPI.fetch(webEnv, pubmedId)
+    .then((result) => {
+      res.status(200).send({
+        status: STATUS_OK,
+        id,
+        pubmedId,
+        result,
+      });
+    })
+});
+*/
 
 module.exports = router;

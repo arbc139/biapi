@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const axios = require('axios');
 const config = require('config');
+const xml2json = require('xml2json');
 
 const eutilConfig = config.get('biapi.eutilConfig');
 
@@ -20,36 +21,87 @@ class EUtilsAPI {
     };
   }
 
-  searchTerm(term, retStart, retMax) {
+  search(term, retStart, retMax) {
     const URL = '/esearch.fcgi';
     const params = {
       tool: this._config.tool,
       email: this._config.email,
       db: this._config.database,
+      field: this._config.defaultField,
       usehistory: 'y',
       retmode: 'json',
       term,
-      field: this._config.defaultField,
       retstart: retStart,
       retmax: retMax,
     };
-    return this._axios.get(URL, { params });
+    return this._axios.get(URL, { params })
+      .then(({ data }) => {
+        if (_.has(data, 'esearchresult.ERROR')) {
+          return Promise.reject(_.get(data, 'esearchresult.ERROR'));
+        }
+
+        return _.get(data, 'esearchresult');
+      });
   }
 
-  searchWebEnv(webEnv, retStart, retMax) {
-    const URL = '/esearch.fcgi';
+  summary(webEnv, retStart, retMax) {
+    const URL = '/esummary.fcgi';
     const params = {
       tool: this._config.tool,
       email: this._config.email,
       db: this._config.database,
       usehistory: 'y',
       retmode: 'json',
-      query_key: 1,
       webEnv,
+      query_key: 1,
       retstart: retStart,
       retmax: retMax,
     };
-    return this._axios.get(URL, { params });
+    return this._axios.get(URL, { params })
+      .then(({ data }) => {
+        if (_.has(data, 'esummaryresult')) {
+          return Promise.reject(_.get(data, 'esummaryresult[0]'));
+        }
+
+        return _.get(data, 'result');
+      });
+  }
+
+  fetch(webEnv, pubmedId) {
+    const URL = '/efetch.fcgi';
+    const params = {
+      tool: this._config.tool,
+      email: this._config.email,
+      db: this._config.database,
+      usehistory: 'y',
+      retmode: 'xml',
+      rettype: 'pubmed',
+      webEnv,
+      query_key: 1,
+      id: pubmedId,
+    };
+    return this._axios.get(URL, { params })
+      .then(({ data }) => {
+        return xml2json.toJson(data, { object: true });
+      })
+      .then((jsonData) => {
+        const medlineCitation = _.get(
+          jsonData,
+          'PubmedArticleSet.PubmedArticle.MedlineCitation',
+        );
+        const title = _.get(medlineCitation, 'Article.ArticleTitle');
+        const abstract = _.get(
+          medlineCitation,
+          'Article.Abstract.AbstractText',
+          'No Abstracts',
+        );
+        const authors = _.get(
+          medlineCitation,
+          'Article.AuthorList.Author',
+        );
+        console.log(medlineCitation);
+        return medlineCitation;
+      });
   }
 }
 
