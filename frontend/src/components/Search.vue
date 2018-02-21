@@ -48,11 +48,10 @@ export default {
               id: _.get(res, 'data.id'),
             },
           });
+          return Promise.resolve();
         })
-        .catch((errorMsg) => {
-          // TODO(dykim): Error message를 ErrorPage에서 보여주도록 처리해야함.
-          console.log(errorMsg);
-        });
+        // TODO(dykim): Error message를 ErrorPage에서 보여주도록 처리해야함.
+        .catch(error => error);
     },
   },
 };
