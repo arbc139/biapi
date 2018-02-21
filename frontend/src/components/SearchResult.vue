@@ -1,5 +1,18 @@
 <template>
-  <div>SearchResult</div>
+  <div class="root">
+    <md-table class="articles-table" v-model="displayArticles" md-card>
+      <md-table-toolbar>
+        <h1 class="md-title">Search Results</h1>
+      </md-table-toolbar>
+
+      <md-table-row slot="md-table-row" slot-scope="{ item }">
+        <md-table-cell md-label="UID">{{ item.uid }}</md-table-cell>
+        <md-table-cell md-label="Date">{{ item.pubDate }}</md-table-cell>
+        <md-table-cell md-label="Main Author">{{ item.mainAuthor }}</md-table-cell>
+        <md-table-cell md-label="Title">{{ item.title }}</md-table-cell>
+      </md-table-row>
+    </md-table>
+  </div>
 </template>
 
 <script>
@@ -7,11 +20,21 @@ import _ from 'lodash';
 import biapi from '@/biapiAxios';
 
 export default {
-  name: 'SearchResult',
+  name: 'search-result',
   data() {
     return {
       articles: [],
     };
+  },
+  computed: {
+    displayArticles() {
+      return this.articles.map(article => ({
+        uid: _.get(article, 'uid'),
+        pubDate: _.get(article, 'pubdate'),
+        mainAuthor: _.get(article, 'authors[0].name'),
+        title: _.get(article, 'title'),
+      }));
+    },
   },
   created() {
     this.fetchResults();
@@ -41,4 +64,13 @@ export default {
 </script>
 
 <style scoped>
+.root {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.articles-table {
+  margin: 16px;
+}
 </style>

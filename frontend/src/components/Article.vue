@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  name: 'Article',
+  name: 'article',
   data() {
     return {
       msg: 'Article page',

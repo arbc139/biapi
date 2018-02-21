@@ -18,7 +18,7 @@ import biapi from '@/biapiAxios';
 import router from '@/router';
 
 export default {
-  name: 'Search',
+  name: 'search',
   data() {
     return {
       queries: {
