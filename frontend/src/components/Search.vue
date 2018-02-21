@@ -38,17 +38,12 @@ export default {
           },
         )
         .then((res) => {
-          if (_.get(res, 'data.status') !== 'biapi/router/STATUS_OK') {
-            return Promise.reject(_.get(res, 'data.message'));
-          }
-
           router.push({
             name: 'SearchResult',
             params: {
               id: _.get(res, 'data.id'),
             },
           });
-          return Promise.resolve();
         })
         // TODO(dykim): Error message를 ErrorPage에서 보여주도록 처리해야함.
         .catch(error => error);
