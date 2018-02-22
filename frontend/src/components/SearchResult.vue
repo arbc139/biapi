@@ -1,6 +1,6 @@
 <template>
   <div class="root">
-    <md-table class="articles-table" v-model="displayArticles" md-card>
+    <md-table class="articles-table" v-model="indexedDisplayArticles" md-card>
       <md-table-toolbar>
         <h1 class="md-title">Search Results</h1>
       </md-table-toolbar>
@@ -11,6 +11,13 @@
         <md-table-cell md-label="Main Author">{{ item.mainAuthor }}</md-table-cell>
         <md-table-cell md-label="Title">{{ item.title }}</md-table-cell>
       </md-table-row>
+      <pagination
+        :page="paginationOptions.page"
+        :size="paginationOptions.size"
+        :total="paginationOptions.total"
+        @page="onPaginationPageChanged"
+        @size="onPaginationSizeChanged"
+      />
     </md-table>
   </div>
 </template>
@@ -19,11 +26,18 @@
 import _ from 'lodash';
 import biapi from '@/biapiAxios';
 
+import pagination from '@/components/Pagination';
+
 export default {
   name: 'search-result',
+  components: { pagination },
   data() {
     return {
       articles: [],
+      defaultPaginationOptions: {
+        size: 10,
+        page: 1,
+      },
     };
   },
   computed: {
@@ -34,6 +48,21 @@ export default {
         mainAuthor: _.get(article, 'authors[0].name'),
         title: _.get(article, 'title'),
       }));
+    },
+    paginationOptions() {
+      return {
+        size: this.defaultPaginationOptions.size,
+        page: this.defaultPaginationOptions.page,
+        total: this.displayArticles.length,
+      };
+    },
+    paginatedDisplayArticles() {
+      return _.chunk(this.displayArticles, this.paginationOptions.size);
+    },
+    indexedDisplayArticles() {
+      return _.isEmpty(this.paginatedDisplayArticles)
+        ? []
+        : this.paginatedDisplayArticles[this.paginationOptions.page - 1];
     },
   },
   created() {
@@ -58,6 +87,12 @@ export default {
         })
         // TODO(dykim): Error message를 ErrorPage에서 보여주도록 처리해야함.
         .catch(error => error);
+    },
+    onPaginationSizeChanged(size) {
+      this.defaultPaginationOptions = _.defaults({ size }, this.defaultPaginationOptions);
+    },
+    onPaginationPageChanged(page) {
+      this.defaultPaginationOptions = _.defaults({ page }, this.defaultPaginationOptions);
     },
   },
 };
