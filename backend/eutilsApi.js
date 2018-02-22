@@ -34,6 +34,7 @@ class EUtilsAPI {
       term,
       retstart: retStart,
       retmax: retMax,
+      sort: 'relevance',
     };
     return this._axios.get(URL, { params })
       .then(({ data }) => {
