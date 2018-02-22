@@ -33,6 +33,8 @@ export default {
   components: { pagination },
   data() {
     return {
+      loading: false,
+      finish: false,
       articles: [],
       defaultPaginationOptions: {
         size: 10,
@@ -64,12 +66,20 @@ export default {
         ? []
         : this.paginatedDisplayArticles[this.paginationOptions.page - 1];
     },
+    currentLastRowIndex() {
+      return this.paginationOptions.page * this.paginationOptions.size;
+    },
   },
   created() {
     this.fetchResults();
   },
   methods: {
-    fetchResults(start = 0, max = 30) {
+    fetchResults(start = 0, max = 100) {
+      if (this.finish || this.loading) {
+        return;
+      }
+
+      this.loading = true;
       biapi
         .get(
           `/search/${this.$route.params.id}/pubmed`,
@@ -81,18 +91,33 @@ export default {
           },
         )
         .then((res) => {
+          this.loading = false;
           const articles = _.get(res, 'data.articles');
-          this.articles = articles.uids.map(uid => articles[uid]);
-          console.log(this.articles);
+          if (_.isEmpty(articles)) {
+            this.finish = true;
+            return;
+          }
+          this.articles = _.concat(this.articles, articles.uids.map(uid => articles[uid]));
         })
-        // TODO(dykim): Error message를 ErrorPage에서 보여주도록 처리해야함.
-        .catch(error => error);
+        .catch(() => {
+          // TODO(dykim): Error message를 ErrorPage에서 보여주도록 처리해야함.
+          this.finish = true;
+          this.loading = false;
+        });
     },
     onPaginationSizeChanged(size) {
       this.defaultPaginationOptions = _.defaults({ size }, this.defaultPaginationOptions);
+      this.fetchResultsIfNeeded();
     },
     onPaginationPageChanged(page) {
       this.defaultPaginationOptions = _.defaults({ page }, this.defaultPaginationOptions);
+      this.fetchResultsIfNeeded();
+    },
+    fetchResultsIfNeeded() {
+      if (this.currentLastRowIndex < (this.paginationOptions.total * 0.7)) {
+        return;
+      }
+      this.fetchResults(this.paginationOptions.total, 100);
     },
   },
 };

@@ -61,7 +61,7 @@ export default {
     },
     pageOptions: {
       type: Array,
-      default: () => [5, 10, 20, 50],
+      default: () => [5, 10, 20],
     },
   },
   beforeCreate() {
