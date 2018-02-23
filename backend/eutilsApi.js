@@ -2,6 +2,7 @@ const _ = require('lodash');
 const axios = require('axios');
 const changeCaseObject = require('change-case-object');
 const config = require('config');
+const moment = require('moment');
 const xml2json = require('xml2json');
 
 const eutilConfig = config.get('biapi.eutilConfig');
@@ -34,8 +35,10 @@ class EUtilsAPI {
       term,
       retstart: retStart,
       retmax: retMax,
-      datetype: 'pdat',
+      datetype: 'edat',
       sort: 'relevance',
+      mindate: moment('1900-01-01').format('YYYY/MM/DD'),
+      maxdate: moment().subtract(2, 'months').format('YYYY/MM/DD'),
     };
     return this._axios.get(URL, { params })
       .then(({ data }) => {
