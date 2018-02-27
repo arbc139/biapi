@@ -1,11 +1,23 @@
 <template>
   <div class="root">
-    <md-table class="articles-table" v-model="indexedDisplayArticles" md-card>
+    <md-table
+      class="articles-table"
+      v-model="indexedDisplayArticles"
+      md-card
+    >
       <md-table-toolbar>
         <h1 class="md-title">Search Results</h1>
       </md-table-toolbar>
 
-      <md-table-row slot="md-table-row" slot-scope="{ item }">
+      <md-table-empty-state
+        :md-label="tableEmptyState.label"
+        :md-description="tableEmptyState.description">
+      </md-table-empty-state>
+
+      <md-table-row
+        slot="md-table-row"
+        slot-scope="{ item }"
+      >
         <md-table-cell md-label="UID">{{ item.uid }}</md-table-cell>
         <md-table-cell md-label="Date">{{ item.pubDate }}</md-table-cell>
         <md-table-cell md-label="Main Author">{{ item.mainAuthor }}</md-table-cell>
@@ -39,6 +51,10 @@ export default {
       defaultPaginationOptions: {
         size: 10,
         page: 1,
+      },
+      tableEmptyState: {
+        label: 'No articles found',
+        description: 'Please wait for a second...',
       },
     };
   },
@@ -99,10 +115,15 @@ export default {
           }
           this.articles = _.concat(this.articles, articles.uids.map(uid => articles[uid]));
         })
-        .catch(() => {
-          // TODO(dykim): Error message를 ErrorPage에서 보여주도록 처리해야함.
+        .catch((error) => {
           this.finish = true;
           this.loading = false;
+          this.tableEmptyState = _.defaults(
+            {
+              description: `Error Message: ${_.get(error, 'response.data.message')}`,
+            },
+            this.tableEmptyState,
+          );
         });
     },
     onPaginationSizeChanged(size) {
