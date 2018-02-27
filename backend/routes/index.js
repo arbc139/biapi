@@ -65,14 +65,19 @@ router.get('/search/:id/pubmed', (req, res) => {
   const start = _.get(req.query, 'start', 0);
   const max = _.get(req.query, 'max', 20);
 
-  eutilsAPI.summary(webEnv, start, max)
-    .then((result) => {
+  Promise
+    .all([
+      eutilsAPI.searchWebEnv(webEnv),
+      eutilsAPI.summary(webEnv, start, max)
+    ])
+    .then(([searchWebEnvResult, summaryResult]) => {
       res.status(200).send({
         status: STATUS_OK,
         id,
         start,
         max,
-        articles: result,
+        count: _.get(searchWebEnvResult ,'count'),
+        articles: summaryResult,
       });
     })
     .catch((errorMessage) => {

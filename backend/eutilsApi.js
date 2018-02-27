@@ -50,6 +50,27 @@ class EUtilsAPI {
       });
   }
 
+  searchWebEnv(webEnv) {
+    const URL = '/esearch.fcgi';
+    const params = {
+      tool: this._config.tool,
+      email: this._config.email,
+      db: this._config.database,
+      usehistory: 'y',
+      retmode: 'json',
+      webEnv,
+      query_key: 1,
+    };
+    return this._axios.get(URL, { params })
+      .then(({ data }) => {
+        if (_.has(data, 'esearchresult.ERROR')) {
+          return Promise.reject(_.get(data, 'esearchresult.ERROR'));
+        }
+
+        return _.get(data, 'esearchresult');
+      });
+  }
+
   summary(webEnv, retStart, retMax) {
     const URL = '/esummary.fcgi';
     const params = {
