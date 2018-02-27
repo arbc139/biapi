@@ -7,15 +7,16 @@ import 'vue-material/dist/theme/default.css';
 
 import App from './App';
 import router from './router';
+import store from './state/store';
 
 Vue.config.productionTip = false;
-
 Vue.use(VueMaterial);
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>',
 });
