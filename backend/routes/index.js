@@ -16,18 +16,21 @@ const STATUS_ERR = 'biapi/router/STATUS_ERR';
  * Build a term with query1 and query2, and send it to e-util api.
  *
  * request parameters
- * - query1
- * - query2
+ * - term
+ * - query1 (deprecated)
+ * - query2 (deprecated)
  *
  * response
  * - RET_OK
  * - RET_ERROR
  */
 router.post('/search', (req, res) => {
+  let term = _.get(req.body, 'term');
+  // TODO(totoro): query1, query2를 제거하고 term만 사용하도록 변경해야함
   const query1 = _.get(req.body, 'query1');
   const query2 = _.get(req.body, 'query2');
 
-  if (_.isUndefined(query1) && _.isUndefined(query2)) {
+  if (_.isUndefined(term) && _.isUndefined(query1) && _.isUndefined(query2)) {
     res.status(404).send({
       status: STATUS_ERR,
       message: 'Queries is not undefined.',
@@ -35,7 +38,9 @@ router.post('/search', (req, res) => {
     return;
   }
 
-  const term = `${query1} AND ${query2}`;
+  if (_.isUndefined(term)) {
+    term = `${query1} AND ${query2}`;
+  }
 
   eutilsAPI.search(term, 0, 20)
     .then((result) => {
