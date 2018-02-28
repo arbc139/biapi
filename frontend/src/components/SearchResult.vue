@@ -5,8 +5,9 @@
       v-model="indexedDisplayArticles"
       md-card
     >
-      <md-table-toolbar>
-        <h1 class="md-title">Search Results</h1>
+      <md-table-toolbar class="articles-table-title-toolbar">
+        <h1 class="md-title articles-table-title">Search Results</h1>
+        <span>total: {{ totalCount }}</span>
       </md-table-toolbar>
 
       <md-table-empty-state
@@ -48,6 +49,7 @@ export default {
       loading: false,
       finish: false,
       articles: [],
+      totalCount: 0,
       defaultPaginationOptions: {
         size: 10,
         page: 1,
@@ -108,6 +110,7 @@ export default {
         )
         .then((res) => {
           this.loading = false;
+          this.totalCount = _.get(res, 'data.count');
           const articles = _.get(res, 'data.articles');
           if (_.isEmpty(articles)) {
             this.finish = true;
@@ -153,5 +156,14 @@ export default {
 
 .articles-table {
   margin: 16px;
+}
+
+.articles-table-title-toolbar {
+  display: flex;
+  align-items: center;
+}
+
+.articles-table-title {
+  flex: 1;
 }
 </style>
