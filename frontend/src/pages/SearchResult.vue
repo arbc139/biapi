@@ -16,8 +16,10 @@
       </md-table-empty-state>
 
       <md-table-row
+        class="article-table-row"
         slot="md-table-row"
         slot-scope="{ item }"
+        @click.native="() => onArticleClicked(item)"
       >
         <md-table-cell md-label="UID">{{ item.uid }}</md-table-cell>
         <md-table-cell md-label="Date">{{ item.pubDate }}</md-table-cell>
@@ -38,6 +40,7 @@
 <script>
 import _ from 'lodash';
 import biapi from '@/biapiAxios';
+import router from '@/router';
 
 import pagination from '@/components/Pagination';
 
@@ -143,6 +146,15 @@ export default {
       }
       this.fetchResults(this.paginationOptions.total, 100);
     },
+    onArticleClicked(item) {
+      router.push({
+        name: 'Article',
+        params: {
+          id: this.$route.params.id,
+          pmid: item.uid,
+        },
+      });
+    },
   },
 };
 </script>
@@ -165,5 +177,9 @@ export default {
 
 .articles-table-title {
   flex: 1;
+}
+
+.article-table-row:hover {
+  cursor: pointer;
 }
 </style>
