@@ -8,7 +8,8 @@
     <div
       class="condition-container"
       v-for="(condition, index) in conditions"
-      :key="condition.id">
+      :key="condition.id"
+    >
       <query-condition
         :condition-mode="
           index === conditions.length - 1
