@@ -7,14 +7,14 @@
       <md-card-content>
         <span class="md-body1">{{ article.title }}</span>
       </md-card-content>
-      <md-divider />
+      <md-divider class="article-divider" />
       <md-card-header>
         <span class="md-title">Authors</span>
       </md-card-header>
       <md-card-content>
         <span class="md-body1">{{ authorsLabel }}</span>
       </md-card-content>
-      <md-divider />
+      <md-divider class="article-divider" />
       <md-card-header>
         <span class="md-title">Abstract</span>
       </md-card-header>
@@ -93,5 +93,10 @@ export default {
   flex-direction: column;
   width: 100%;
   padding: 16px;
+}
+
+.article-divider {
+  margin-left: 16px;
+  margin-right: 16px;
 }
 </style>
