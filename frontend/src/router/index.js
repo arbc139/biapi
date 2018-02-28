@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
-import Article from '@/components/Article';
-import Search from '@/components/Search';
-import SearchResult from '@/components/SearchResult';
+import Article from '@/pages/Article';
+import Search from '@/pages/Search';
+import SearchResult from '@/pages/SearchResult';
 
 Vue.use(Router);
 
