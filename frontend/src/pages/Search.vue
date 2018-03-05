@@ -34,6 +34,7 @@ import router from '@/router';
 
 import queryCondition from '@/components/QueryCondition';
 import { Condition } from '@/structures/QueryConditionObject';
+import { SET_QUERY_CONDITION } from '@/state/actions';
 
 export default {
   name: 'search',
@@ -86,6 +87,7 @@ export default {
       this.query = this.buildQuery(this.conditions);
     },
     onClickSearch() {
+      this.$store.commit(SET_QUERY_CONDITION, this.conditions);
       biapi
         .post(
           '/search',
