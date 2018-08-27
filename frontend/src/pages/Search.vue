@@ -57,6 +57,12 @@ export default {
     buildQuery(conditions) {
       const parsedConditions = _.chain(conditions)
         .filter(condition => !_.isEmpty(condition.keyword))
+        .map((condition) => {
+          if (_.includes(condition.keyword, ' ')) {
+            return _.defaults({ keyword: `{${condition.keyword}}` }, condition);
+          }
+          return condition;
+        })
         .map((condition, index) => {
           if (index === 0) {
             return `${condition.keyword}`;

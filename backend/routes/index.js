@@ -25,12 +25,12 @@ const STATUS_ERR = 'biapi/router/STATUS_ERR';
  * - RET_ERROR
  */
 router.post('/search', (req, res) => {
-  let term = _.get(req.body, 'term');
+  let rawTerm = _.get(req.body, 'term');
   // TODO(totoro): query1, query2를 제거하고 term만 사용하도록 변경해야함
   const query1 = _.get(req.body, 'query1');
   const query2 = _.get(req.body, 'query2');
 
-  if (_.isUndefined(term) && _.isUndefined(query1) && _.isUndefined(query2)) {
+  if (_.isUndefined(rawTerm) && _.isUndefined(query1) && _.isUndefined(query2)) {
     res.status(404).send({
       status: STATUS_ERR,
       message: 'Queries is not undefined.',
@@ -38,9 +38,47 @@ router.post('/search', (req, res) => {
     return;
   }
 
-  if (_.isUndefined(term)) {
+  if (_.isUndefined(rawTerm)) {
     term = `${query1} AND ${query2}`;
+  } else {
+    term = _.chain(rawTerm)
+      .replace('{', '(')
+      .replace('}', ')')
+      .value();
   }
+
+  eutilsAPI.search(term, 0, 20)
+    .then((result) => {
+      const id = base64.encode(_.get(result, 'webenv'));
+      res.status(200).send({
+        status: STATUS_OK,
+        id,
+        result,
+      });
+    })
+    .catch((errorMessage) => {
+      res.status(404).send({
+        status: STATUS_ERR,
+        message: errorMessage,
+      });
+    });
+});
+
+router.post('/search', (req, res) => {
+  let rawTerm = _.get(req.body, 'term');
+
+  if (_.isUndefined(rawTerm)) {
+    res.status(404).send({
+      status: STATUS_ERR,
+      message: 'Queries is not undefined.',
+    });
+    return;
+  }
+
+  term = _.chain(rawTerm)
+    .replace('{', '(')
+    .replace('}', ')')
+    .value();
 
   eutilsAPI.search(term, 0, 20)
     .then((result) => {

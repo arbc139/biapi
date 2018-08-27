@@ -9,3 +9,5 @@ biapi:
     # e-util api
     # https://www.ncbi.nlm.nih.gov/books/NBK25499/#_chapter4_General_Usage_Guidelines_
     apiKey: NONE
+  patentsViewConfig:
+    baseURL: http://www.patentsview.org/api/patents/
