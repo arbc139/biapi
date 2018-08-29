@@ -31,7 +31,7 @@ class PatentsViewAPI {
   _parseTerm(rawTerm) {
     if (_.first(rawTerm) !== '(' && !_.last(rawTerm) !== ')') {
       return {
-        _text_any: { patent_title: this._parseWords(rawTerm) },
+        _text_phrase: { patent_title: this._parseWords(rawTerm) },
       };
     }
 
@@ -49,7 +49,7 @@ class PatentsViewAPI {
 
     const first = this._parseTerm(rawFirst);
     const second = {
-      _text_any: { patent_title: this._parseWords(rawSecond) },
+      _text_phrase: { patent_title: this._parseWords(rawSecond) },
     };
     if (rawOp === 'AND') {
       return {
@@ -82,30 +82,31 @@ class PatentsViewAPI {
       return Promise.reject('Term has invalid format:', term);
     }
 
+    const fields = [
+      'patent_number', 'patent_title', 'patent_date', 'inventor_first_name',
+      'inventor_last_name',
+    ];
     const params = {
       q: termJson,
       o: {
         page: (retStart / retMax) + 1,
         per_page: retMax,
       },
-      f: [
-        'patent_number', 'patent_title', 'patent_date', 'inventor_first_name',
-        'inventor_last_name',
-      ],
     };
-    return this._axios.get(URL, { params });
+    return this._axios.get(`${URL}?f=${JSON.stringify(fields)}`, { params });
   }
 
   fetch(patentNumber) {
     const URL = '/query';
+
+    const fields = [
+      'patent_number', 'patent_title', 'patent_date', 'inventor_first_name',
+      'inventor_last_name', 'patent_type', 'patent_abstract',
+    ];
     const params = {
       q: { patent_number: patentNumber },
-      f: [
-        'patent_number', 'patent_title', 'patent_date', 'inventor_first_name',
-        'inventor_last_name', 'patent_type', 'patent_abstract',
-      ],
     };
-    return this._axios.get(URL, { params });
+    return this._axios.get(`${URL}?f=${JSON.stringify(fields)}`, { params });
   }
 }
 
