@@ -89,125 +89,23 @@ class PatentsViewAPI {
         per_page: retMax,
       },
       f: [
-        'patent_number', 'patent_title', 'patent_date', 'inventor_last_name',
+        'patent_number', 'patent_title', 'patent_date', 'inventor_first_name',
+        'inventor_last_name',
       ],
     };
     return this._axios.get(URL, { params });
   }
 
-  search(term, retStart, retMax) {
-    const URL = '/esearch.fcgi';
+  fetch(patentNumber) {
+    const URL = '/query';
     const params = {
-      tool: this._config.tool,
-      email: this._config.email,
-      db: this._config.database,
-      field: this._config.defaultField,
-      usehistory: 'y',
-      retmode: 'json',
-      term,
-      retstart: retStart,
-      retmax: retMax,
-      datetype: 'edat',
-      sort: 'relevance',
-      mindate: moment('1900-01-01').format('YYYY/MM/DD'),
-      maxdate: moment().subtract(2, 'months').format('YYYY/MM/DD'),
+      q: { patent_number: patentNumber },
+      f: [
+        'patent_number', 'patent_title', 'patent_date', 'inventor_first_name',
+        'inventor_last_name', 'patent_type', 'patent_abstract',
+      ],
     };
-    return this._axios.get(URL, { params })
-      .then(({ data }) => {
-        if (_.has(data, 'esearchresult.ERROR')) {
-          return Promise.reject(_.get(data, 'esearchresult.ERROR'));
-        }
-
-        return _.get(data, 'esearchresult');
-      });
-  }
-
-  searchWebEnv(webEnv) {
-    const URL = '/esearch.fcgi';
-    const params = {
-      tool: this._config.tool,
-      email: this._config.email,
-      db: this._config.database,
-      usehistory: 'y',
-      retmode: 'json',
-      webEnv,
-      query_key: 1,
-    };
-    return this._axios.get(URL, { params })
-      .then(({ data }) => {
-        if (_.has(data, 'esearchresult.ERROR')) {
-          return Promise.reject(_.get(data, 'esearchresult.ERROR'));
-        }
-
-        return _.get(data, 'esearchresult');
-      });
-  }
-
-  summary(webEnv, retStart, retMax) {
-    const URL = '/esummary.fcgi';
-    const params = {
-      tool: this._config.tool,
-      email: this._config.email,
-      db: this._config.database,
-      usehistory: 'y',
-      retmode: 'json',
-      webEnv,
-      query_key: 1,
-      retstart: retStart,
-      retmax: retMax,
-    };
-    return this._axios.get(URL, { params })
-      .then(({ data }) => {
-        if (_.has(data, 'esummaryresult')) {
-          return Promise.reject(_.get(data, 'esummaryresult[0]'));
-        }
-
-        return _.get(data, 'result');
-      });
-  }
-
-  fetch(webEnv, pubmedId) {
-    const URL = '/efetch.fcgi';
-    const params = {
-      tool: this._config.tool,
-      email: this._config.email,
-      db: this._config.database,
-      usehistory: 'y',
-      retmode: 'xml',
-      rettype: 'pubmed',
-      webEnv,
-      query_key: 1,
-      id: pubmedId,
-    };
-    return this._axios.get(URL, { params })
-      .then(({ data }) => {
-        return xml2json.toJson(data, { object: true });
-      })
-      .then((jsonData) => {
-        const medlineCitation = changeCaseObject.camelCase(_.get(
-          jsonData,
-          'PubmedArticleSet.PubmedArticle.MedlineCitation',
-        ));
-
-        if (_.isUndefined(medlineCitation)) {
-          return Promise.reject('Article is not exist');
-        }
-
-        return {
-          title: _.get(medlineCitation, 'article.articleTitle'),
-          abstract: _.get(
-            medlineCitation,
-            'article.abstract.abstractText',
-            'No Abstracts',
-          ),
-          authors: _.get(
-            medlineCitation,
-            'article.authorList.author',
-            [],
-          ),
-          articleDate: _.get(medlineCitation, 'article.articleDate'),
-        };
-      });
+    return this._axios.get(URL, { params });
   }
 }
 

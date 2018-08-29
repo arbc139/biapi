@@ -64,7 +64,7 @@ export default {
 
       this.loading = true;
       biapi
-        .get(`/search/${this.$route.params.id}/pubmed/${this.$route.params.pmid}`)
+        .get(`/search/papers/${this.$route.params.id}/pubmeds/${this.$route.params.pmid}`)
         .then((res) => {
           this.loading = false;
           const articleRaw = _.get(res, 'data.article');

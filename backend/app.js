@@ -6,8 +6,6 @@ const express = require('express');
 const logger = require('morgan');
 const path = require('path');
 
-const router = require('./routes');
-
 const app = express();
 
 // View engine setup.
@@ -21,6 +19,5 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(router);
 
 module.exports = app;

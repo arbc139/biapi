@@ -96,7 +96,7 @@ export default {
       this.$store.commit(SET_QUERY_CONDITION, this.conditions);
       biapi
         .post(
-          '/search',
+          '/search/papers',
           { term: this.query },
         )
         .then((res) => {

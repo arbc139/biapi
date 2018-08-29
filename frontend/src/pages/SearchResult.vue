@@ -103,7 +103,7 @@ export default {
       this.loading = true;
       biapi
         .get(
-          `/search/${this.$route.params.id}/pubmed`,
+          `/search/papers/${this.$route.params.id}/pubmeds`,
           {
             params: {
               start,
