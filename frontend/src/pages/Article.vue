@@ -9,6 +9,13 @@
       </md-card-content>
       <md-divider class="article-divider" />
       <md-card-header>
+        <span class="md-title">Pubmed ID</span>
+      </md-card-header>
+      <md-card-content>
+        <span class="md-body1">{{ article.pmid }}</span>
+      </md-card-content>
+      <md-divider class="article-divider" />
+      <md-card-header>
         <span class="md-title">Authors</span>
       </md-card-header>
       <md-card-content>
@@ -67,9 +74,11 @@ export default {
         .get(`/search/papers/${this.$route.params.id}/pubmeds/${this.$route.params.pmid}`)
         .then((res) => {
           this.loading = false;
+          const pmid = _.get(res, 'data.pubmedId');
           const articleRaw = _.get(res, 'data.article');
           const authorsRaw = _.get(articleRaw, 'authors', []);
           this.article = {
+            pmid,
             title: _.get(articleRaw, 'title', 'No title'),
             authors: _.isArray(authorsRaw)
               ? authorsRaw.map(author => `${_.get(author, 'foreName')} ${_.get(author, 'lastName')}`)

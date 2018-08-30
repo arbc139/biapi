@@ -169,7 +169,10 @@ export default {
     onPatentClicked(item) {
       router.push({
         name: 'Patent',
-        params: { patentNumber: item.number },
+        params: {
+          encryptedTerm: this.$route.params.encryptedTerm,
+          patentNumber: item.number,
+        },
       });
     },
   },
