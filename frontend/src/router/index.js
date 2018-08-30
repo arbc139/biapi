@@ -17,12 +17,12 @@ export default new Router({
       component: Search,
     },
     {
-      path: '/searchresult/papers/:id',
+      path: '/searchresult/papers/:encryptedTerm/id/:id',
       name: 'SearchResultPaper',
       component: SearchResultPaper,
     },
     {
-      path: '/searchresult/papers/:id/articles/:pmid',
+      path: '/searchresult/papers/:encryptedTerm/id/:id/articles/:pmid',
       name: 'Article',
       component: Article,
     },

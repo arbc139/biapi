@@ -150,6 +150,7 @@ export default {
       router.push({
         name: 'Article',
         params: {
+          encryptedTerm: this.$route.params.encryptedTerm,
           id: this.$route.params.id,
           pmid: item.uid,
         },

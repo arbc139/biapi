@@ -105,6 +105,7 @@ export default {
           router.push({
             name: 'SearchResultPaper',
             params: {
+              encryptedTerm: base64Encode(this.query),
               id: _.get(res, 'data.id'),
             },
           });
