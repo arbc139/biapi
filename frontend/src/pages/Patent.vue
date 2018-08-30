@@ -56,9 +56,19 @@ export default {
     this.fetchArticle();
   },
   data() {
+    const term = base64Decode(this.$route.params.encryptedTerm);
+    const keywords = _.chain(term)
+      .replace(/\(/g, '')
+      .replace(/\)/g, '')
+      .split(' ')
+      .filter(keyword => (
+        keyword !== 'AND' && keyword !== 'OR' && keyword !== 'NOT'
+      ))
+      .value();
     return {
       loading: false,
       patent: {},
+      keywords,
     };
   },
   computed: {
