@@ -86,6 +86,7 @@ class PatentsViewAPI {
       'patent_number', 'patent_title', 'patent_date', 'inventor_first_name',
       'inventor_last_name',
     ];
+    const sorts = [{ patent_date: 'desc' }];
     const params = {
       q: termJson,
       o: {
@@ -93,7 +94,10 @@ class PatentsViewAPI {
         per_page: retMax,
       },
     };
-    return this._axios.get(`${URL}?f=${JSON.stringify(fields)}`, { params });
+    return this._axios.get(
+      `${URL}?f=${JSON.stringify(fields)}&s=${JSON.stringify(sorts)}`,
+      { params },
+    );
   }
 
   fetch(patentNumber) {
