@@ -38,7 +38,7 @@ import _ from 'lodash';
 import biapi from '@/biapiAxios';
 
 export default {
-  name: 'pubmedArticle',
+  name: 'article',
   beforeCreate() {
     this._ = _;
   },

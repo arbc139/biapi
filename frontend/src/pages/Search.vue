@@ -23,7 +23,8 @@
         @updated="onUpdateConditions"
       />
     </div>
-    <md-button class="search-button" @click="onClickSearch">Search</md-button>
+    <md-button class="search-button" @click="onClickPaperSearch">Paper Search</md-button>
+    <md-button class="search-button" @click="onClickPatentSearch">Patent Search</md-button>
   </div>
 </template>
 
@@ -35,6 +36,7 @@ import router from '@/router';
 import queryCondition from '@/components/QueryCondition';
 import { Condition } from '@/structures/QueryConditionObject';
 import { SET_QUERY_CONDITION } from '@/state/actions';
+import { base64Encode } from '@/utils';
 
 export default {
   name: 'search',
@@ -92,7 +94,7 @@ export default {
     onUpdateConditions() {
       this.query = this.buildQuery(this.conditions);
     },
-    onClickSearch() {
+    onClickPaperSearch() {
       this.$store.commit(SET_QUERY_CONDITION, this.conditions);
       biapi
         .post(
@@ -101,7 +103,7 @@ export default {
         )
         .then((res) => {
           router.push({
-            name: 'SearchResult',
+            name: 'SearchResultPaper',
             params: {
               id: _.get(res, 'data.id'),
             },
@@ -109,6 +111,13 @@ export default {
         })
         // TODO(dykim): Error message를 ErrorPage에서 보여주도록 처리해야함.
         .catch(error => error);
+    },
+    onClickPatentSearch() {
+      this.$store.commit(SET_QUERY_CONDITION, this.conditions);
+      router.push({
+        name: 'SearchResultPatent',
+        params: { encryptedTerm: base64Encode(this.query) },
+      });
     },
   },
 };

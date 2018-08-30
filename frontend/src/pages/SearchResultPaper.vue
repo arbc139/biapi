@@ -45,7 +45,7 @@ import router from '@/router';
 import pagination from '@/components/Pagination';
 
 export default {
-  name: 'search-result',
+  name: 'search-result-paper',
   components: { pagination },
   data() {
     return {

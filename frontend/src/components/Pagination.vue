@@ -1,5 +1,5 @@
 <template>
-  <div class="root">
+  <div class="root-pagination">
     <span>{{ label }}</span>
     <div class="option-selector">
       <md-field v-show="!_.isEmpty(pageOptions)" class="option-selector-field">
@@ -109,7 +109,7 @@ export default {
 </script>
 
 <style scoped>
-.root {
+.root-pagination {
   display: flex;
   flex-direction: row;
   flex: 1;

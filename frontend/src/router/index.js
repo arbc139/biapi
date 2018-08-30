@@ -3,7 +3,8 @@ import Router from 'vue-router';
 
 import Article from '@/pages/Article';
 import Search from '@/pages/Search';
-import SearchResult from '@/pages/SearchResult';
+import SearchResultPaper from '@/pages/SearchResultPaper';
+import SearchResultPatent from '@/pages/SearchResultPatent';
 
 Vue.use(Router);
 
@@ -15,14 +16,19 @@ export default new Router({
       component: Search,
     },
     {
-      path: '/searchresult/:id',
-      name: 'SearchResult',
-      component: SearchResult,
+      path: '/searchresult/papers/:id',
+      name: 'SearchResultPaper',
+      component: SearchResultPaper,
     },
     {
-      path: '/searchresult/:id/articles/:pmid',
+      path: '/searchresult/papers/:id/articles/:pmid',
       name: 'Article',
       component: Article,
+    },
+    {
+      path: '/searchresult/patents/:encryptedTerm',
+      name: 'SearchResultPatent',
+      component: SearchResultPatent,
     },
   ],
 });
