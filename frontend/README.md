@@ -25,3 +25,14 @@ npm test
 ```
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
+## Hosting Setup
+
+```bash
+# build for production with minification (After build, 'dist' directory created)
+npm run build
+
+# Serve build files by 'serve' program
+# Basically, recommend to use '5050' PORT.
+serve -s dist -p ${PORT}
+```
