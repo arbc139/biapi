@@ -48,6 +48,7 @@
 
 <script>
 import _ from 'lodash';
+import { base64Decode } from '@/utils';
 import biapi from '@/biapiAxios';
 
 export default {
