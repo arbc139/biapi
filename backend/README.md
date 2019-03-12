@@ -2,6 +2,9 @@
 
 > Bio API web backend project
 
+## Version
+Node 8
+
 ## Hosting Setup
 
 ```bash

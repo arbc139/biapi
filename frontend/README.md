@@ -2,6 +2,9 @@
 
 > Bio API web frontend project
 
+## Version
+Node 11
+
 ## Build Setup
 
 ``` bash
