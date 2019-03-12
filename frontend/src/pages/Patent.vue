@@ -5,7 +5,12 @@
         <span class="md-title">Title</span>
       </md-card-header>
       <md-card-content>
-        <span class="md-body1">{{ patent.title }}</span>
+        <span class="md-body1">
+          <text-highlight :queries="keywords" v-if="_.isString(patent.title)">
+            {{ patent.title }}
+            <!-- {{ patent.title }} -->
+          </text-highlight>
+        </span>
       </md-card-content>
       <md-divider class="patent-divider" />
       <md-card-header>
@@ -40,7 +45,14 @@
         <span class="md-title">Abstract</span>
       </md-card-header>
       <md-card-content>
-        <span class="md-body1">{{ patent.abstract }}</span>
+        <span class="md-body1">
+          <text-highlight
+            :queries="keywords"
+            v-if="_.isString(patent.abstract)"
+          >
+            {{ patent.abstract }}
+          </text-highlight>
+        </span>
       </md-card-content>
     </md-card>
   </div>
@@ -53,6 +65,9 @@ import biapi from '@/biapiAxios';
 
 export default {
   name: 'patent',
+  beforeCreate() {
+    this._ = _;
+  },
   created() {
     this.fetchArticle();
   },

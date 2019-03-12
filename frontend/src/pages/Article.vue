@@ -5,7 +5,11 @@
         <span class="md-title">Title</span>
       </md-card-header>
       <md-card-content>
-        <span class="md-body1">{{ article.title }}</span>
+        <span class="md-body1">
+          <text-highlight :queries="keywords" v-if="_.isString(article.title)">
+            {{ article.title }}
+          </text-highlight>
+        </span>
       </md-card-content>
       <md-divider class="article-divider" />
       <md-card-header>
@@ -31,10 +35,18 @@
         :key="index"
       >
         <div class="md-subheading">{{ abstract.label }}</div>
-        <span class="md-body1">{{ abstract.t }}</span>
+        <span class="md-body1">
+          <text-highlight :queries="keywords">
+            {{ abstract.t }}
+          </text-highlight>
+        </span>
       </md-card-content>
       <md-card-content v-if="_.isString(article.abstracts)">
-        <span class="md-body1">{{ article.abstracts }}</span>
+        <span class="md-body1">
+          <text-highlight :queries="keywords">
+            {{ article.abstracts }}
+          </text-highlight>
+        </span>
       </md-card-content>
     </md-card>
   </div>
