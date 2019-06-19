@@ -25,12 +25,16 @@
     </div>
     <md-button class="search-button" @click="onClickPaperSearch">Paper Search</md-button>
     <md-button class="search-button" @click="onClickPatentSearch">Patent Search</md-button>
+    <md-button class="search-button" @click="onClickGeneSearch">Gene Search</md-button>
   </div>
 </template>
 
 <script>
 import _ from 'lodash';
+import moment from 'moment';
+
 import biapi from '@/biapiAxios';
+import genax from '@/genaxAxios';
 import router from '@/router';
 
 import queryCondition from '@/components/QueryCondition';
@@ -119,6 +123,60 @@ export default {
         name: 'SearchResultPatent',
         params: { encryptedTerm: base64Encode(this.query) },
       });
+    },
+    onClickGeneSearch() {
+      this.$store.commit(SET_QUERY_CONDITION, this.conditions);
+      /*
+        {
+          "query":"(prostate AND cancer)",
+          "start_date":"2010/01/01",
+          "end_date":"2019/06/13",
+          "MIN_NODE_SUP":0.001,
+          "node_size":0.1,
+          "email":"",
+          "MIN_SUP":0.0001,
+          "MAX_PVAL":0.05,
+          "COOC_EM":0,
+        }
+      */
+      const now = moment();
+      const baseParameters = {
+        start_date: moment(now)
+          .subtract(9, 'years')
+          .set({ month: 0, date: 1 }),
+        end_date: moment().set({
+          year: now.get('year'),
+          month: now.get('month'),
+          date: now.get('date'),
+        }),
+        MIN_NODE_SUP: 0.001,
+        node_size: 0.1,
+        email: '',
+        MIN_SUP: 0.0001,
+        MAX_PVAL: 0.05,
+        COOC_EM: 0,
+      };
+      genax
+        .post(
+          'job_insert',
+          _.defaults({
+            query: this.query,
+          }, baseParameters),
+        )
+        .then((response) => {
+          const { insertId } = response.data;
+          return genax.get(`id2keys/${insertId}`);
+        })
+        .then((response) => {
+          const jobKey = _.get(response.data, '[0].J_KEY');
+          router.push({
+            name: 'SearchResultGene',
+            params: {
+              encryptedTerm: base64Encode(this.query),
+              jobKey,
+            },
+          });
+        });
     },
   },
 };

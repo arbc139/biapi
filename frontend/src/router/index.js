@@ -2,8 +2,10 @@ import Vue from 'vue';
 import Router from 'vue-router';
 
 import Article from '@/pages/Article';
+import Gene from '@/pages/Gene';
 import Patent from '@/pages/Patent';
 import Search from '@/pages/Search';
+import SearchResultGene from '@/pages/SearchResultGene';
 import SearchResultPaper from '@/pages/SearchResultPaper';
 import SearchResultPatent from '@/pages/SearchResultPatent';
 
@@ -35,6 +37,16 @@ export default new Router({
       path: '/searchresult/patents/:encryptedTerm/:patentNumber',
       name: 'Patent',
       component: Patent,
+    },
+    {
+      path: '/searchresult/genes/:encryptedTerm/:jobKey',
+      name: 'SearchResultGene',
+      component: SearchResultGene,
+    },
+    {
+      path: '/searchresult/genes/:encryptedTerm/:jobKey/:jobId/:hgncId',
+      name: 'Gene',
+      component: Gene,
     },
   ],
 });

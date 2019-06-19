@@ -11,3 +11,6 @@ biapi:
     apiKey: NONE
   patentsViewConfig:
     baseURL: http://www.patentsview.org/api/patents/
+  openFdaConfig:
+    apiKey: q8t9VqezbLeAOoxNLvB9exFbXdY7CFXhEY9lUcxD
+    baseURL: https://api.fda.gov/drug/event.json
