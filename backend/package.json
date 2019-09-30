@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "https_start": "node ./bin/www_https",
+    "http_start": "node ./bin/www"
   },
   "dependencies": {
     "axios": "^0.17.1",

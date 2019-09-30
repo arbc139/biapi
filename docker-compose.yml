@@ -6,9 +6,14 @@ services:
     ports:
       - 5050:8080
     command: ["http-server", "dist", "-p", "8080"]
-  back:
+  back-http:
     image: arbc139/biapi-back:1.0.0
     ports:
       - 5000:3000
-    command: ["npm", "start"]
+    command: ["npm", "run", "http_start"]
+  back-https:
+    image: arbc139/biapi-back:1.0.0
+    ports:
+      - 5550:3000
+    command: ["npm", "run", "https_start"]
 
