@@ -6,8 +6,7 @@
 
 const app = require('../main');
 var debug = require('debug')('biapi-server:server');
-var https = require('https');
-var fs = require('fs');
+var http = require('http');
 
 /**
  * Get port from environment and store in Express.
@@ -17,15 +16,10 @@ var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 /**
- * Create HTTPS server.
+ * Create HTTP server.
  */
 
-var httpsOptions = {
-  key: fs.readFileSync('./bin/ssl/key.pem'),
-  cert: fs.readFileSync('./bin/ssl/cert.pem'),
-};
-
-var server = https.createServer(httpsOptions, app);
+var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
