@@ -25,7 +25,7 @@
       >
         <md-table-cell md-label="Symbol">{{ item.symbol }}</md-table-cell>
         <md-table-cell md-label="HGNC ID">{{ item.hgncId }}</md-table-cell>
-        <!-- <md-table-cell md-label="Degree">{{ item.degree }}</md-table-cell> -->
+        <md-table-cell md-label="Degree">{{ item.degree }}</md-table-cell>
       </md-table-row>
       <pagination
         :page="paginationOptions.page"
@@ -41,7 +41,7 @@
 <script>
 import _ from 'lodash';
 import genax from '@/genaxAxios';
-// import router from '@/router';
+import router from '@/router';
 
 import Bus from '@/components/Bus';
 import pagination from '@/components/Pagination';
@@ -189,6 +189,8 @@ export default {
         symbol: _.get(gene, 'symbol'),
         hgncId: _.get(gene, 'hgncId'),
         degree: _.get(gene, 'degree'),
+        jobId: _.get(gene, 'jobId'),
+        jobKey: _.get(gene, 'jobKey'),
       }));
     },
     paginationOptions() {
@@ -302,7 +304,6 @@ export default {
               eigenVector: _.ceil(gene.Eigenvector, 6),
               katz: _.ceil(gene.Katz, 6),
             }))
-            .shuffle()
             .value();
           this.loading = false;
           store.commit(SET_LOADING, { loading: false });
@@ -315,10 +316,20 @@ export default {
       this.defaultPaginationOptions = _.defaults({ page }, this.defaultPaginationOptions);
     },
     onGeneClicked(item) {
-      window.open(
-        `https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:${item.hgncId}`,
-        '_blank',
-      );
+      // window.open(
+      //   `https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:${item.hgncId}`,
+      //   '_blank',
+      // );
+      // :encryptedTerm/:jobKey/:jobId/:hgncId
+      router.push({
+        name: 'Gene',
+        params: {
+          encryptedTerm: this.$route.params.encryptedTerm,
+          jobKey: item.jobKey,
+          jobId: item.jobId,
+          hgncId: item.hgncId,
+        },
+      });
     },
   },
 };

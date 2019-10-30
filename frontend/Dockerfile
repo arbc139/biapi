@@ -8,8 +8,8 @@ RUN mkdir /app
 COPY . /app/
 
 WORKDIR /app
-RUN npm install --silent && \ 
-    npm run build && \
-    apk del make gcc g++ python
+RUN npm install --silent 
+RUN npm run build
+RUN apk del make gcc g++ python
 
 EXPOSE 8080
